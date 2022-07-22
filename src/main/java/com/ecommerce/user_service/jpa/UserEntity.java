@@ -36,8 +36,11 @@ public class UserEntity {
                 .userId(UUID.randomUUID().toString())
                 .email(requestUser.getEmail())
                 .name(requestUser.getName())
-                .encryptedPassword("encrypted_password")
                 .build();
+    }
+
+    public void encodePassword(String password) {
+        this.encryptedPassword = password;
     }
 
 }
