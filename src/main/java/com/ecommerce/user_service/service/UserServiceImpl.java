@@ -1,14 +1,22 @@
 package com.ecommerce.user_service.service;
 
 import com.ecommerce.user_service.dto.RequestUser;
+import com.ecommerce.user_service.dto.ResponseOrder;
 import com.ecommerce.user_service.dto.ResponseUser;
+import com.ecommerce.user_service.exception.UserNotFoundException;
 import com.ecommerce.user_service.jpa.UserEntity;
 import com.ecommerce.user_service.jpa.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.IterableUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -17,12 +25,34 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public ResponseUser createUser(RequestUser requestUser) {
         UserEntity userEntity = UserEntity.of(requestUser);
         userEntity.encodePassword(passwordEncoder.encode(requestUser.getPassword()));
         UserEntity savedUserEntity = userRepository.save(userEntity);
 
         return ResponseUser.of(savedUserEntity);
+    }
+
+    @Override
+    public ResponseUser getUserByUserId(String userId) {
+        ResponseUser responseUser = userRepository.findByUserId(userId)
+                .map(ResponseUser::of)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        List<ResponseOrder> orders = new ArrayList<>();
+        responseUser.setOrders(orders);
+
+        return responseUser;
+    }
+
+    @Override
+    public List<ResponseUser> getUserByAll() {
+        return IterableUtils
+                .toList(userRepository.findAll())
+                .stream()
+                .map(ResponseUser::of)
+                .toList();
     }
 
 }
