@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ResponseUser> getUserByAll() {
+    public List<ResponseUser> getAllUsers() {
         return IterableUtils
                 .toList(userRepository.findAll())
                 .stream()

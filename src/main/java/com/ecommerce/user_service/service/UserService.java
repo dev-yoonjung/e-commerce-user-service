@@ -11,6 +11,6 @@ public interface UserService {
 
     ResponseUser getUserByUserId(String userId);
 
-    List<ResponseUser> getUserByAll();
+    List<ResponseUser> getAllUsers();
 
 }
