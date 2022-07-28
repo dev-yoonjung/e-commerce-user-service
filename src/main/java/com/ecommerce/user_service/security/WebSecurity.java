@@ -25,7 +25,7 @@ public class WebSecurity {
 
         http
                 .authorizeHttpRequests()
-                .requestMatchers("/users/**")
+                .requestMatchers("/user-service/**")
                 .permitAll()
                 .anyRequest()
                 .permitAll();
