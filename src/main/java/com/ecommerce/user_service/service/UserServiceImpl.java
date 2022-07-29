@@ -55,4 +55,22 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
+    @Override
+    @Transactional
+    public ResponseUser updateUser(RequestUser requestUser, String userId) {
+        UserEntity userEntity = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        userEntity.updateUser(requestUser);
+        userEntity.encodePassword(passwordEncoder.encode(requestUser.getPassword()));
+
+        return ResponseUser.of(userEntity);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUserByUserId(String userId) {
+        userRepository.deleteByUserId(userId);
+    }
+
 }

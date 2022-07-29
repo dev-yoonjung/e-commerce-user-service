@@ -43,4 +43,9 @@ public class UserEntity {
         this.encryptedPassword = password;
     }
 
+    public void updateUser(RequestUser requestUser) {
+        this.email = requestUser.getEmail();
+        this.name = requestUser.getName();
+    }
+
 }

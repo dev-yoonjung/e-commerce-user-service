@@ -13,4 +13,7 @@ public interface UserService {
 
     List<ResponseUser> getAllUsers();
 
+    ResponseUser updateUser(RequestUser requestUser, String userId);
+
+    void deleteUserByUserId(String userId);
 }
