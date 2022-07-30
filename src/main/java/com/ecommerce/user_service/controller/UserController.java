@@ -3,6 +3,7 @@ package com.ecommerce.user_service.controller;
 import com.ecommerce.user_service.dto.RequestUser;
 import com.ecommerce.user_service.dto.ResponseUser;
 import com.ecommerce.user_service.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("")
-    public ResponseEntity<ResponseUser> createUser(@RequestBody RequestUser requestUser) {
+    public ResponseEntity<ResponseUser> createUser(@RequestBody @Valid RequestUser requestUser) {
         ResponseUser responseUser = userService.createUser(requestUser);
 
         return ResponseEntity
@@ -37,7 +38,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<ResponseUser> updateUser(@PathVariable String userId, @RequestBody RequestUser requestUser) {
+    public ResponseEntity<ResponseUser> updateUser(@PathVariable String userId, @RequestBody @Valid RequestUser requestUser) {
         return ResponseEntity.ok(userService.updateUser(requestUser, userId));
     }
 
