@@ -10,4 +10,6 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
     void deleteByUserId(String userId);
 
+    Optional<UserEntity> findByEmail(String email);
+
 }

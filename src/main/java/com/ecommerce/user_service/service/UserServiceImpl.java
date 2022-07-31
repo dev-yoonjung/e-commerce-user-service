@@ -8,6 +8,9 @@ import com.ecommerce.user_service.jpa.UserEntity;
 import com.ecommerce.user_service.jpa.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.IterableUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,4 +76,14 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteByUserId(userId);
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email));
+
+        return new User(
+                userEntity.getEmail(),
+                userEntity.getEncryptedPassword(),
+                new ArrayList<>());
+    }
 }
