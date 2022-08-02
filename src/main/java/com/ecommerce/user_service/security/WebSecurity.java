@@ -3,7 +3,6 @@ package com.ecommerce.user_service.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,8 +17,6 @@ import org.springframework.security.web.access.expression.WebExpressionAuthoriza
 @Configuration
 public class WebSecurity {
 
-    private final Environment environment;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -31,18 +28,13 @@ public class WebSecurity {
     }
 
     @Bean
-    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
+    public SecurityFilterChain configure(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         AuthenticationFilter authenticationFilter = new AuthenticationFilter();
         authenticationFilter.setAuthenticationManager(authenticationManager);
 
         http
                 .csrf()
                 .disable();
-
-        http
-                .formLogin()
-                .usernameParameter("email");
 
         http
                 .authorizeHttpRequests()
