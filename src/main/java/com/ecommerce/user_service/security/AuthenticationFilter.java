@@ -3,7 +3,6 @@ package com.ecommerce.user_service.security;
 import com.ecommerce.user_service.dto.RequestLogin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,8 +30,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                 new ArrayList<>()
                     )
             );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
         }
     }
 
