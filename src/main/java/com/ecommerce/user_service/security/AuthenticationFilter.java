@@ -1,6 +1,7 @@
 package com.ecommerce.user_service.security;
 
 import com.ecommerce.user_service.dto.RequestLogin;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,27 +19,28 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
-        RequestLogin credentials = RequestLogin.builder()
-                .email(obtainUsername(request))
-                .password(obtainPassword(request))
-                .build();
+        try {
+            RequestLogin credentials = new ObjectMapper()
+                    .readValue(request.getInputStream(), RequestLogin.class);
 
-        return getAuthenticationManager()
-                .authenticate(
+            return getAuthenticationManager()
+                    .authenticate(
                         new UsernamePasswordAuthenticationToken(
                                 credentials.getEmail(),
                                 credentials.getPassword(),
                                 new ArrayList<>()
-                        )
-                );
+                    )
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
-        super.successfulAuthentication(request, response, chain, authResult);
+                                            Authentication authResult) {
     }
 
 }
