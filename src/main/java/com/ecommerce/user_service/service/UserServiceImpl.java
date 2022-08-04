@@ -50,6 +50,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseUser getUserByEmail(String email) {
+        ResponseUser responseUser = userRepository.findByEmail(email)
+                .map(ResponseUser::of)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        List<ResponseOrder> orders = new ArrayList<>();
+        responseUser.setOrders(orders);
+
+        return responseUser;
+    }
+
+    @Override
     public List<ResponseUser> getAllUsers() {
         return IterableUtils
                 .toList(userRepository.findAll())

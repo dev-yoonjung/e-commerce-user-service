@@ -1,8 +1,10 @@
 package com.ecommerce.user_service.security;
 
+import com.ecommerce.user_service.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,8 +30,12 @@ public class WebSecurity {
     }
 
     @Bean
-    public SecurityFilterChain configure(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter();
+    public SecurityFilterChain configure(
+            HttpSecurity http,
+            AuthenticationManager authenticationManager,
+            UserService userService,
+            Environment environment) throws Exception {
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(userService, environment);
         authenticationFilter.setAuthenticationManager(authenticationManager);
 
         http
