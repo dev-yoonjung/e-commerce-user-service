@@ -14,8 +14,15 @@ public class HealthCheckController {
     @GetMapping("/health-check")
     public String status() {
         return String.format(
-                "It's working in user service on port %s",
-                environment.getProperty("local.server.port"));
+                "It's working in user service. " +
+                        "local port: %s. " +
+                        "server port: %s. " +
+                        "token secret: %s. " +
+                        "token expiration time: %s. ",
+                environment.getProperty("local.server.port"),
+                environment.getProperty("server.port"),
+                environment.getProperty("token.secret"),
+                environment.getProperty("token.expiration_time"));
     }
 
 }

@@ -44,6 +44,8 @@ public class WebSecurity {
 
         http
                 .authorizeHttpRequests()
+                .requestMatchers("/actuator/**")
+                .permitAll()
                 .requestMatchers("/**")
                 .access(new WebExpressionAuthorizationManager("hasIpAddress('127.0.0.1')"))
                 .and()

@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -58,8 +57,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String email = user.getUsername();
         ResponseUser responseUser = userService.getUserByEmail(email);
 
-        System.out.println("environment.getProperty(\"token.secret\") = " + environment.getProperty("token.secret"));
-        
         String token = Jwts.builder()
                 .setSubject(responseUser.getUserId())
                 .setIssuedAt(new Date())
