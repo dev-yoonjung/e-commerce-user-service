@@ -1,5 +1,6 @@
 package com.ecommerce.user_service.service;
 
+import com.ecommerce.user_service.client.OrderServiceClient;
 import com.ecommerce.user_service.dto.RequestUser;
 import com.ecommerce.user_service.dto.ResponseOrder;
 import com.ecommerce.user_service.dto.ResponseUser;
@@ -8,17 +9,12 @@ import com.ecommerce.user_service.jpa.UserEntity;
 import com.ecommerce.user_service.jpa.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.IterableUtils;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +28,7 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final Environment environment;
-
-    private final RestTemplate restTemplate;
+    private final OrderServiceClient orderServiceClient;
 
     @Override
     @Transactional
@@ -52,17 +46,9 @@ public class UserServiceImpl implements UserService {
                 .map(ResponseUser::of)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        String orderUrl = String.format(environment.getProperty("order_service.url"), userId);
-        ResponseEntity<List<ResponseOrder>> orders = restTemplate.exchange(
-                orderUrl,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<ResponseOrder>>() {
+        List<ResponseOrder> orders = orderServiceClient.getOrders(userId);
 
-                }
-        );
-
-        responseUser.setOrders(orders.getBody());
+        responseUser.setOrders(orders);
 
         return responseUser;
     }
