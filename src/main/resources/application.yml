@@ -21,3 +21,6 @@ management:
     web:
       exposure:
         include: refresh, health, beans, busrefresh
+logging:
+  level:
+    com.ecommerce.user_service.client: DEBUG

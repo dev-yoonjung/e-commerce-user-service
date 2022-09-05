@@ -7,7 +7,9 @@ import com.ecommerce.user_service.dto.ResponseUser;
 import com.ecommerce.user_service.exception.UserNotFoundException;
 import com.ecommerce.user_service.jpa.UserEntity;
 import com.ecommerce.user_service.jpa.UserRepository;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -46,9 +49,12 @@ public class UserServiceImpl implements UserService {
                 .map(ResponseUser::of)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        List<ResponseOrder> orders = orderServiceClient.getOrders(userId);
-
-        responseUser.setOrders(orders);
+        try {
+            List<ResponseOrder> orders = orderServiceClient.getOrders(userId);
+            responseUser.setOrders(orders);
+        } catch (FeignException exception) {
+            log.error(exception.getMessage());
+        }
 
         return responseUser;
     }
