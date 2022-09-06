@@ -7,7 +7,6 @@ import com.ecommerce.user_service.dto.ResponseUser;
 import com.ecommerce.user_service.exception.UserNotFoundException;
 import com.ecommerce.user_service.jpa.UserEntity;
 import com.ecommerce.user_service.jpa.UserRepository;
-import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
@@ -49,12 +48,8 @@ public class UserServiceImpl implements UserService {
                 .map(ResponseUser::of)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        try {
-            List<ResponseOrder> orders = orderServiceClient.getOrders(userId);
-            responseUser.setOrders(orders);
-        } catch (FeignException exception) {
-            log.error(exception.getMessage());
-        }
+        List<ResponseOrder> orders = orderServiceClient.getOrders(userId);
+        responseUser.setOrders(orders);
 
         return responseUser;
     }
