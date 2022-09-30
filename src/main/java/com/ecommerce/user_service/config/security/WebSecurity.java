@@ -1,4 +1,4 @@
-package com.ecommerce.user_service.security;
+package com.ecommerce.user_service.config.security;
 
 import com.ecommerce.user_service.service.UserService;
 import lombok.RequiredArgsConstructor;
